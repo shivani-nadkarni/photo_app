@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% if title %}
+	<title>{{ title }} - Photo-app</title>
+	{% else %}
+	<title>Welcome</title>
+	{% endif %}
+
+</head>
+<body>
+	<div>Photo-app <a href="/login">Home</a></div>
+	<hr>
+	{% block content %}{% endblock %}
+</body>
+</html>
