@@ -19,9 +19,21 @@
 
 
 <body>
+
 	<nav class="navbar navbar-dark bg-dark">
   		<a class="navbar-brand" href="/login">My Photos</a>
+  		{% if username %}
+  			{% block logout %}
+  			
+     		{% endblock %}
+     	{% endif %}
 	</nav>
+
+	<div>
+	{% if message %}
+			{% block header %}{% endblock %}
+	{% endif %}
+	</div>
 
 	<div>
 		{% block content %}{% endblock %}

@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 
+{% block header %} 
+	<div class="alert alert-danger my-3 mx-auto" style="width: 450px" role="alert">
+		{{ message }} 
+	</div>	
+
+{% endblock %}
+
 {% block content %}
 	<!-- <h1>This is login page</h1> -->
 	<div class="row">

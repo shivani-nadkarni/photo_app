@@ -1,6 +1,6 @@
-from app import app
-from flask import render_template, request, g
 import sqlite3
+from flask import g
+
 
 #database path
 DATABASE = '/home/shivani/Learning/python/photo_app/photo_app'
@@ -35,26 +35,3 @@ def init_db():
             db.cursor().executescript(f.read())
         db.commit()
 
-
-
-#routes
-@app.route('/')
-@app.route('/index')
-def index():
-	return render_template('login.html', title='Login')
-
-@app.route('/login', methods=['POST'])
-def login():
-	#fetch user input
-	username = request.form['username']
-	password = request.form['password']
-
-	#query to fetch user record if exists
-	user = query_db('select * from users where username = ?',
-                [username], one=True)
-
-	if user and password == user['password']:
-		return render_template("my_photos.html", username=username)
-	else:
-		print("login failed")
-		return render_template("login.html", message='Incorrect username/password. Try again!')

@@ -1,5 +1,15 @@
 {% extends 'base.html' %}
 
+{% block logout %}
+    	<div class="navbar-nav">
+      		<a class="nav-item nav-link" href="/index">Logout</a>
+      	</div>
+{% endblock %}
+
 {% block content %}
-	<h1>Hey {{ username }}. Welcome to my photos page</h1>
+	<h4>Hey {{ username }}. Welcome to my photos page</h4>
+	<br>
+	<button type="submit" class="btn btn-success">Add Photos</button>
+	<h4>My photos</h4>
+	<hr>
 {% endblock %}
