@@ -1,15 +1,17 @@
 from app import app
-from flask import render_template, request, g, session
+from flask import render_template, request, g, session, flash, redirect
 import sqlite3
+from werkzeug.utils import secure_filename
+import os
 
 #database path
-DATABASE = '/home/shivani/Learning/python/photo_app/photo_app'
+# DATABASE = '/home/shivani/Learning/python/photo_app/photo_app'
 
 #establish database connection
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
+        db = g._database = sqlite3.connect(app.config['DATABASE'])
     db.row_factory = sqlite3.Row
     return db
 
@@ -35,14 +37,9 @@ def init_db():
             db.cursor().executescript(f.read())
         db.commit()
 
-# some other useful functions
-# def convert_image_to_blob(file):
-#   Convert digital data to binary format
-#     with open(filename, 'rb') as file:
-#         blobData = file.read()
-#     return blobData
-
-
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 #routes
 @app.route('/')
@@ -68,28 +65,22 @@ def login():
         print("login failed")
         return render_template("login.html", message='Incorrect username/password. Try again!')
 
-"""
-@app.route("/upload", methods=['POST'])
+
+@app.route("/upload", methods=['POST','GET'])
 def upload():
     if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect('my_photos.html')
         file = request.files['file']
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
-            flash('No selected file')
-            return redirect('my_photos.html', session=session, message='Error occurred. Retry uploading')
+            print('No selected file')
+            return render_template('my_photos.html', session=session, failure='No file selected. Retry uploading.')
         if file:
-            # blob_data = convert_image_to_blob(file)
-            blob_data = file
-            user_id = session.user.id
-            result = query_db('INSERT INTO photos (user_id, photo) VALUES (?, ?)', [user_id, blob_data], one=True)
-            return redirect('my_photos.html', message='file uploaded successfully')
-    return redirect('my_photos.html', session=session)
-"""
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return render_template('my_photos.html', session=session, success='File uploaded successfully.')
+    return render_template('my_photos.html')
+
 
 @app.route("/logout")
 def logout():

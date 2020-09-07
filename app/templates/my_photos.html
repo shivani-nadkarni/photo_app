@@ -18,6 +18,15 @@
 	  		<input type="file" name="file">
 	     
 	      	<button type="submit" class="btn btn-success">Upload</button>
+	      	{% if failure %}
+		      	<div class="alert alert-danger mx-auto mt-2" role="alert">
+					<b>{{ failure }}</b>
+				</div>
+			{% elif success %}
+				<div class="alert alert-success mx-auto mt-2" role="alert">
+					<b>{{ success }}</b>
+				</div>
+			{% endif %}
 	    </span>
 	</form>
 	<h3 class="mt-4">My Collection</h4>
