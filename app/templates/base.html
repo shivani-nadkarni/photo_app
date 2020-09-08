@@ -23,7 +23,7 @@
 	<nav class="navbar navbar-dark bg-dark">
   		<a class="navbar-brand" href="/login">My Photos</a>
   		<!-- this block displays logout option -->
-  		{% if username %}
+  		{% if session %}
   			{% block logout %}
   			
      		{% endblock %}

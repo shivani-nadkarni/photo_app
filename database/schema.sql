@@ -10,7 +10,7 @@ CREATE TABLE users (
 CREATE TABLE photos (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	user_id INTEGER NOT NULL,
-	photo BLOB NOT NULL,
+	photo_path TEXT NOT NULL,
 	FOREIGN KEY (user_id) REFERENCES users (id)
 );
 

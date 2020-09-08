@@ -3,6 +3,7 @@ from flask import render_template, request, g, session, flash, redirect
 import sqlite3
 from werkzeug.utils import secure_filename
 import os
+import pathlib
 
 #database path
 # DATABASE = '/home/shivani/Learning/python/photo_app/photo_app'
@@ -25,9 +26,19 @@ def close_connection(exception):
 #execute queries
 def query_db(query, args=(), one=False):
     cur = get_db().execute(query, args)
+    print(cur.lastrowid)
     rv = cur.fetchall()
     cur.close()
     return (rv[0] if rv else None) if one else rv
+
+#perform insertion
+def insert_photo(query, args=()):
+    conn = sqlite3.connect(app.config['DATABASE'])
+    cur = conn.cursor()
+    cur.execute(query, args)
+    conn.commit()
+    cur.close()
+    return cur.lastrowid
 
 #initialising schema
 def init_db():
@@ -38,8 +49,7 @@ def init_db():
         db.commit()
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 #routes
 @app.route('/')
@@ -57,6 +67,7 @@ def login():
     user = query_db('select * from users where username = ?',
                 [username], one=True)
 
+    #Validation
     if user and password == user['password']:
         session['username'] = username
         session['user_id'] = user['id']
@@ -77,7 +88,13 @@ def upload():
             return render_template('my_photos.html', session=session, failure='No file selected. Retry uploading.')
         if file:
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            photo_path = app.config['UPLOAD_FOLDER'] + '/' + session['username']  
+            
+            #creates new folder for each user only for the first uplaod
+            pathlib.Path(app.config['UPLOAD_FOLDER'], session['username']).mkdir(exist_ok=True)
+            
+            file.save(os.path.join(photo_path, filename))
+            result = insert_photo('INSERT INTO photos (user_id, photo_path) VALUES (?,?)', [session['user_id'], photo_path])
             return render_template('my_photos.html', session=session, success='File uploaded successfully.')
     return render_template('my_photos.html')
 
