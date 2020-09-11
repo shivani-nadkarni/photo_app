@@ -21,7 +21,7 @@
 <body>
 
 	<nav class="navbar navbar-dark bg-dark">
-  		<a class="navbar-brand" href="/login">My Photos</a>
+  		<a class="navbar-brand" href="{{ url_for('home', message=false, success= false) }}">My Photos</a>
   		<!-- this block displays logout option -->
   		{% if session %}
   			{% block logout %}
@@ -31,7 +31,7 @@
 	</nav>
 
 	<div class="container">
-		<!-- this block displays alert messages for incorrect login -->
+		<!-- this block displays alert messages for incorrect login --> 
 		<div>
 		{% if message %}
 				{% block header %}{% endblock %}

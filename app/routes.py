@@ -1,12 +1,9 @@
 from app import app
-from flask import render_template, request, g, session, flash, redirect
+from flask import render_template, request, g, session, flash, redirect, send_from_directory
 import sqlite3
 from werkzeug.utils import secure_filename
 import os
 import pathlib
-
-#database path
-# DATABASE = '/home/shivani/Learning/python/photo_app/photo_app'
 
 #establish database connection
 def get_db():
@@ -57,48 +54,81 @@ def allowed_file(filename):
 def index():
     return render_template('login.html', title='Login')
 
-@app.route('/login', methods=['POST'])
-def login():
-    #fetch user input
-    username = request.form['username']
-    password = request.form['password']
-
-    #query to fetch user record if exists
-    user = query_db('select * from users where username = ?',
-                [username], one=True)
-
-    #Validation
-    if user and password == user['password']:
-        session['username'] = username
-        session['user_id'] = user['id']
-        return render_template("my_photos.html", session=session)
+@app.route('/home')
+@app.route('/home/<message>/<success>', methods=['GET'])
+def home(session, message, success):
+    if session['logged_in']:
+        photos = query_db('SELECT photo_path FROM photos WHERE user_id=?', [session['user_id']], one=False)
+        return render_template("my_photos.html", session=session, photos=photos, message=message, success=success)
     else:
-        print("login failed")
-        return render_template("login.html", message='Incorrect username/password. Try again!')
+        return index()
 
+@app.route('/login', methods=['POST','GET'])
+def login():
+    if request.method == 'POST':
+        #fetch user input
+        username = request.form['username']
+        password = request.form['password']
+
+        #query to fetch user record if exists
+        user = query_db('select * from users where username = ?',
+                    [username], one=True)
+
+        #Validation
+        if user and password == user['password']:
+            session['username'] = username
+            session['user_id'] = user['id']
+            session['logged_in'] = True
+            return home(session=session, message=False, success=False)
+        else:
+            return render_template("login.html", message='Incorrect username/password. Try again!')
+
+    elif session['logged_in'] and request.method == 'GET':
+        return home(session=session, message=False, success=False)
+
+    else:
+        return redirect('/index')
 
 @app.route("/upload", methods=['POST','GET'])
 def upload():
     if request.method == 'POST':
         file = request.files['file']
+        
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
             print('No selected file')
-            return render_template('my_photos.html', session=session, failure='No file selected. Retry uploading.')
+            return home(session=session, message='No file selected. Retry uploading.', success=False)
+
         if file:
             filename = secure_filename(file.filename)
-            photo_path = app.config['UPLOAD_FOLDER'] + '/' + session['username']  
-            
+
             #creates new folder for each user only for the first uplaod
             pathlib.Path(app.config['UPLOAD_FOLDER'], session['username']).mkdir(exist_ok=True)
             
-            file.save(os.path.join(photo_path, filename))
-            result = insert_photo('INSERT INTO photos (user_id, photo_path) VALUES (?,?)', [session['user_id'], photo_path])
-            return render_template('my_photos.html', session=session, success='File uploaded successfully.')
-    return render_template('my_photos.html')
+            #saving the file
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], session['username'], filename))
+            
+            #save filename into the database
+            result = insert_photo('INSERT INTO photos (user_id, photo_path) VALUES (?,?)', [session['user_id'], filename])
+            return home(session=session, message='File uploaded successfully.', success=True)
+    
+    elif request.method == 'GET' and session['logged_in']:
+        return home(session=session, message=False, success=False)
+    
+    else:
+        return redirect('/index')
 
+@app.route("/images/<filename>")
+def get_image(filename):
+    if session['logged_in']:
+        return send_from_directory(os.path.join('..',
+        app.config['UPLOAD_FOLDER'], session['username']), filename)
+    else:
+        return redirect('/index')
 
 @app.route("/logout")
 def logout():
-    return index()
+    if session['logged_in']:
+        session['logged_in'] = False
+    return redirect('/index')

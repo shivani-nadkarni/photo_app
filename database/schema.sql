@@ -16,3 +16,6 @@ CREATE TABLE photos (
 
 INSERT INTO users (username, password) 
 VALUES ('Shivani', '123');
+
+INSERT INTO users (username, password) 
+VALUES ('Viren', '456');
