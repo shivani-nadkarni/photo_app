@@ -1,43 +1,34 @@
-import sqlite3
-from flask import g
+"""Defines user, photo class, creates database, enters some data"""
+from flask_sqlalchemy import SQLAlchemy
+from photo_app.routes import app
 
-#establish database connection
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(app.config['DATABASE'])
-    db.row_factory = sqlite3.Row
-    return db
+database = SQLAlchemy(app)
 
-#close database connetion
-@app.teardown_appcontext
-def close_connection(exception):
-    db = getattr(g, '_database', None)
-    if db is not None:
-        db.close()
+class User(database.Model):
+    __tablename__ = 'user'
+    user_id = database.Column(database.Integer, primary_key = True)
+    username = database.Column(database.String(20), nullable=False)
+    password = database.Column(database.String(20), nullable=False)  
+    photos = database.relationship('Photo', backref='author', lazy='dynamic')
 
-#execute queries
-def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    print(cur.lastrowid)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
 
-#perform insertion
-def insert_photo(query, args=()):
-    conn = sqlite3.connect(app.config['DATABASE'])
-    cur = conn.cursor()
-    cur.execute(query, args)
-    conn.commit()
-    cur.close()
-    return cur.lastrowid
+class Photo(database.Model):
+    __tablename__ = 'photo'
+    photo_id = database.Column(database.Integer, primary_key = True)
+    filename = database.Column(database.String(50), nullable=False)
+    user_id = database.Column(database.Integer, database.ForeignKey('user.user_id'), nullable=False)
 
-#initialising schema
-def init_db():
-    with app.app_context():
-        db = get_db()
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
+    def __repr__(self):
+        return '<Photo {}>'.format(self.filename, self.user_id)
 
+def create_db():
+    database.create_all()
+
+    admin = User(username='admin', password='admin')
+    guest = User(username='guest', password='guest')
+
+    database.session.add(admin)
+    database.session.add(guest)
+    database.session.commit()
