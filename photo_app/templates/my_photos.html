@@ -36,7 +36,7 @@
 	{% if photos %}
 		<ul>
     	{% for photo in photos %}
-    		<img src="{{ url_for('get_image', filename=photo.photo_path) }}" style="width: 100px; height:100px">
+    		<img src="{{ url_for('get_image', filename=photo.filename) }}" style="width: 100px; height:100px">
     	{% endfor %}
    		</ul>
 	{% endif %}
@@ -44,7 +44,7 @@
 	{% if photos %}
 		<ul>
     	{% for photo in photos %}
-        	<li><a href="/images/{{ photo.photo_path }}" >image{{ loop.index }}</a></li>
+        	<li><a href="/images/{{ photo.filename }}" >image{{ loop.index }}</a></li>
     	{% endfor %}
    		</ul>
 	{% endif %}

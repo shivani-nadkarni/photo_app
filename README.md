@@ -18,20 +18,34 @@ Install sqlite3
 ```
 apt-get install sqlite3
 ```
-Run the schema.sql file to create the database in the base folder.
+To create the database, open python interpretor.
 ```
-sqlite3 photo_db.py < schema.sql
+python3
 ```
+Then type the following the create the database.
+```
+from photo_app.routes import database
+from photo_app.db import User, Photo, create_db
+
+create_db()
+```
+
 ### Installing
 
 To start flask server, run the following command in the base folder.
 ```
 python3 -m photo_app
 ```
-##User Guide
 
 ##Demo
+You can sign in the portal by using the credentials below:
+username -- guest
+password -- guest
 
+Once logged in, upload pictures by browsing picture of you choice and then click on upload.
+All uploaded pictures can be viewed through the thumbnails or by clicking the image links.
+
+Once done, you can logout the portal by clicking 'Logout' on the top right corner. 
 
 ## Authors
 
@@ -40,5 +54,5 @@ Shivani Nadkarni - https://github.com/shivani-nadkarni
 
 ## Acknowledgments
 
-Thanks to viren-nadkarni for guiding and inspiring to build this.
+Thanks to viren-nadkarni for guiding and inspiring to build this. https://github.com/viren-nadkarni
 

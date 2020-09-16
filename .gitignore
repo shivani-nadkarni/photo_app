@@ -5,3 +5,4 @@ upload_folder/
 .flaskenv
 photo_app/__pycache__/
 photo_app/__init__.pyc
+photo_app/photo_app.db
