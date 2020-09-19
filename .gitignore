@@ -6,3 +6,4 @@ upload_folder/
 photo_app/__pycache__/
 photo_app/__init__.pyc
 photo_app/photo_app.db
+photo_app/.env

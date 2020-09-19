@@ -37,8 +37,9 @@ To start flask server, run the following command in the base folder.
 python3 -m photo_app
 ```
 
-##Demo
-You can sign in the portal by using the credentials below:
+###Demo
+
+You can sign in the portal by using the below credentials:
 username -- guest
 password -- guest
 
@@ -54,5 +55,5 @@ Shivani Nadkarni - https://github.com/shivani-nadkarni
 
 ## Acknowledgments
 
-Thanks to viren-nadkarni for guiding and inspiring to build this. https://github.com/viren-nadkarni
+Thanks to viren-nadkarni for guiding and inspiring to build this - https://github.com/viren-nadkarni
 
