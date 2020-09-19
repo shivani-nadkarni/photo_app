@@ -14,10 +14,17 @@ Run reqirements.txt to install python libraries.
 ```
 pip install -r requirements.txt
 ```
-Install sqlite3
+Install postgreSQL.
 ```
-apt-get install sqlite3
+apt-get install postgresql
 ```
+Change the database URL accordingly. For postgreSQL, we have default user as 'postgres' and no default password. You can set password for the same. I have set 'postgres' as password 
+
+You can then set environment variables for database URL and secret key as follows.
+```
+export DATABASE_URL="postgresql://postgres:postgres@localhost/photo_app"
+export SECRET_KEY='1234sasdf//;;'
+``` 
 To create the database, open python interpretor.
 ```
 python3
@@ -37,7 +44,7 @@ To start flask server, run the following command in the base folder.
 python3 -m photo_app
 ```
 
-###Demo
+### Demo
 
 You can sign in the portal by using the below credentials:
 username -- guest
