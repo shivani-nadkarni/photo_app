@@ -18,6 +18,8 @@ Install postgreSQL.
 ```
 apt-get install postgresql
 ```
+In the postgres console, create a database and name it 'photo_app'.
+
 Change the database URL accordingly. For postgreSQL, we have default user as 'postgres' and no default password. You can set password for the same. I have set 'postgres' as the password. 
 
 You can then set environment variables for database URL and secret key as follows.
@@ -36,7 +38,7 @@ from photo_app.db import User, Photo, create_db
 
 create_db()
 ```
-Now, we create a minio object storage server, where we will be uploading images. Also download the minio client(mc) command.
+Now, we create a minio object storage server, where we will be uploading images. Also, download the minio client(mc) command.
 ```
 wget https://dl.min.io/server/minio/release/linux-amd64/minio
 chmod +x minio
