@@ -18,7 +18,7 @@ Install postgreSQL.
 ```
 apt-get install postgresql
 ```
-Change the database URL accordingly. For postgreSQL, we have default user as 'postgres' and no default password. You can set password for the same. I have set 'postgres' as password 
+Change the database URL accordingly. For postgreSQL, we have default user as 'postgres' and no default password. You can set password for the same. I have set 'postgres' as the password. 
 
 You can then set environment variables for database URL and secret key as follows.
 ```
@@ -36,9 +36,39 @@ from photo_app.db import User, Photo, create_db
 
 create_db()
 ```
+Now, we create a minio object storage server, where we will be uploading images. Also download the minio client(mc) command.
+```
+wget https://dl.min.io/server/minio/release/linux-amd64/minio
+chmod +x minio
 
-### Installing
+wget https://dl.min.io/client/mc/release/linux-amd64/mc
+chmod +x mc
+```
+Type the following to create a shortname 'myminio' to the cloud storage service. I have used the default credentials for the service. You are free to set your own and insert them accordingly in the below command.
+```
+mc alias set ALIAS <YOUR-S3-ENDPOINT> <YOUR-ACCESS-KEY> <YOUR-SECRET-KEY> 
 
+mc alias set myminio http://192.168.1.107:9000 minioadmin minioadmin
+```
+We will then need to create a bucket and set download permission for it.
+```
+mc cb myminio/mytestbucket
+mc set download myminio/mytestbucket/
+```
+Now export the following variables.
+```
+export S3_URL='http://192.168.1.107:9000'
+export S3_KEY='minioadmin'
+export S3_SECRET='minioadmin'
+export S3_BUCKET='mytestbucket'
+```
+
+### Run
+
+To start minio server, type the following.
+```
+minio server data 
+```
 To start flask server, run the following command in the base folder.
 ```
 python3 -m photo_app
@@ -46,14 +76,12 @@ python3 -m photo_app
 
 ### Demo
 
-You can sign in the portal by using the below credentials:
-username -- guest
-password -- guest
+You can sign in the portal by using the credentials username as 'guest' and password 'guest'.
 
 Once logged in, upload pictures by browsing picture of you choice and then click on upload.
 All uploaded pictures can be viewed through the thumbnails or by clicking the image links.
 
-Once done, you can logout the portal by clicking 'Logout' on the top right corner. 
+Once done, you can logout of the portal by clicking 'Logout' on the top right corner. 
 
 ## Authors
 
@@ -63,4 +91,3 @@ Shivani Nadkarni - https://github.com/shivani-nadkarni
 ## Acknowledgments
 
 Thanks to viren-nadkarni for guiding and inspiring to build this - https://github.com/viren-nadkarni
-

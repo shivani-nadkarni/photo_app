@@ -1,10 +1,9 @@
 """Definitions for routes."""
-import os
-import pathlib
-from flask import render_template, request, session, redirect, send_from_directory
+from flask import render_template, request, session, redirect
 from werkzeug.utils import secure_filename
 from photo_app import app
 from photo_app.db import database, User, Photo
+from photo_app.helpers import upload_file_to_s3
 
 # Checks if filename has an image extension
 def allowed_file(filename):
@@ -17,8 +16,8 @@ def allowed_file(filename):
 def index():
     return render_template('login.html', title='Login')
 
-""" Endpoint for /home.
-    The second endpoint is used when values are passed from my 'my_photos.html'. """
+# Endpoint for /home.
+# The second endpoint is used when values are passed from my 'my_photos.html'.
 @app.route('/home')
 @app.route('/home/<message>/<success>', methods=['GET'])
 def home(session, message, success):
@@ -26,7 +25,7 @@ def home(session, message, success):
         photos = Photo.query.filter_by(user_id=session['user_id']).all()
         return render_template("my_photos.html", session=session,
                                photos=photos, message=message,
-                               success=success)
+                               success=success, s3_location=app.config['S3_LOCATION'])
     return index()
 
 # endpoint for /login
@@ -67,17 +66,15 @@ def upload():
             return home(session=session, message='No file selected. Retry uploading.',
                         success=False)
 
-        if file:
-            filename = secure_filename(file.filename)
+        if file and allowed_file(file.filename):
+            file_name = secure_filename(file.filename)
+            file_path = '{}/{}'.format(session['username'], file_name)
 
-            #creates new folder for each user only for the first uplaod
-            pathlib.Path(app.config['UPLOAD_FOLDER'], session['username']).mkdir(exist_ok=True)
-
-            #saving the file
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], session['username'], filename))
+            # upload to minio
+            upload_file_to_s3(file_path, file, app.config['S3_BUCKET'])
 
             #save filename into the database
-            photo = Photo(filename=filename)
+            photo = Photo(file_path=file_path)
             user = User.query.filter_by(user_id=session['user_id']).first()
             user.photos.append(photo)
             database.session.commit()
@@ -86,16 +83,6 @@ def upload():
     elif request.method == 'GET' and session['logged_in']:
         return home(session=session, message=False, success=False)
 
-    return redirect('/index')
-
-""" This is executed when image link is clicked on home page and 
-    and also called by 'src' attribute of image thumbnails. """
-@app.route("/images/<filename>")
-def get_image(filename):
-    if session['logged_in']:
-        return send_from_directory(os.path.join('..',
-                                   app.config['UPLOAD_FOLDER'],
-                                   session['username']), filename)
     return redirect('/index')
 
 # Executed when the user logs out.

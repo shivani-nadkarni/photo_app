@@ -36,17 +36,12 @@
 	{% if photos %}
 		<ul>
     	{% for photo in photos %}
-    		<img src="{{ url_for('get_image', filename=photo.filename) }}" style="width: 100px; height:100px">
+    		<a href="{{ s3_location }}{{ photo.file_path }}" >
+    			<img src="{{ s3_location }}{{ photo.file_path }}" style="width: 150px; height:150px">
+    		</a>
     	{% endfor %}
    		</ul>
 	{% endif %}
 	<hr>
-	{% if photos %}
-		<ul>
-    	{% for photo in photos %}
-        	<li><a href="/images/{{ photo.filename }}" >image{{ loop.index }}</a></li>
-    	{% endfor %}
-   		</ul>
-	{% endif %}
 
 {% endblock %}

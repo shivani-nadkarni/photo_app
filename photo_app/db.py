@@ -23,14 +23,16 @@ class User(database.Model):
 class Photo(database.Model):
     __tablename__ = 'photo'
     photo_id = database.Column(database.Integer, primary_key = True)
-    filename = database.Column(database.String(50), nullable=False)
-    user_id = database.Column(database.Integer, database.ForeignKey('users.user_id'), nullable=False)
+    file_path = database.Column(database.String(50), nullable=False)
+    user_id = database.Column(database.Integer,
+                              database.ForeignKey('users.user_id'),
+                              nullable=False)
 
     def __repr__(self):
         return '<Photo {}>'.format(self.filename)
 
-"""The function creates database 'photo_app' and the tables(users, photo) in it. 
-    Enters some user data in 'users' table."""
+# The function creates database 'photo_app' and the tables(users, photo) in it.
+# Enters some user data in 'users' table.
 def create_db():
     database.create_all()
 
