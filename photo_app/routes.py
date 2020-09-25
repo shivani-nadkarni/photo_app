@@ -12,8 +12,8 @@ def allowed_file(filename):
     :param filename: name of the file with the extension
     """
 
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in\
-                               app.config['ALLOWED_EXTENSIONS']
+    return '.' in filename and filename.rsplit('.', 1)[1].lower()\
+                               in app.config['ALLOWED_EXTENSIONS']
 
 @app.route('/')
 @app.route('/index')
@@ -27,13 +27,20 @@ def index():
 def home(session, message, success):
     """Endpoint for /home.
     The second endpoint is used when values are passed from my 'my_photos.html'.
+
+    :param session: contains session variables username, user_id and logged_in
+    :param message: contains message whether file upload is successful or not
+    :param success: boolean value, true if successful upload else false
     """
 
     if session['logged_in']:
         photos = Photo.query.filter_by(user_id=session['user_id']).all()
-        return render_template("my_photos.html", session=session,
-                               photos=photos, message=message,
-                               success=success, s3_location=app.config['S3_LOCATION'])
+        return render_template("my_photos.html",
+                               session=session,
+                               photos=photos,
+                               message=message,
+                               success=success,
+                               s3_location=app.config['S3_LOCATION'])
     return index()
 
 # endpoint for /login
@@ -62,22 +69,28 @@ def login():
             session['logged_in'] = True
 
             # Redirect to user home page
-            return home(session=session, message=False, success=False)
+            return home(session=session,
+                        message=False,
+                        success=False)
 
         # Validation failed
-        return render_template("login.html",
-                                   message="Incorrect username/password. Retry again.")
+        return render_template(
+                "login.html",
+                message="Incorrect username/password. Retry again.")
 
     # When the user is logged-in and the endpoint is requested
     elif session['logged_in'] and request.method == 'GET':
-        return home(session=session, message=False, success=False)
+        return home(session=session,
+                    message=False,
+                    success=False)
 
     # When the user is not logged-in and the endpoint is requested
     return redirect('/index')
 
 @app.route("/upload", methods=['POST','GET'])
 def upload():
-    """Executed when the upload button is clicked or upload endpoint is requested.
+    """Executed when the upload button is clicked or upload endpoint is
+    requested.
 
     If file is selected, then give success message else alert the user that file
     is not selected.
@@ -85,14 +98,15 @@ def upload():
 
     # If user clicks upload button
     if request.method == 'POST':
-        # Fetch file
+        # Fetch the file
         file = request.files['file']
 
         # If user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
             print('No selected file')
-            return home(session=session, message='No file selected. Retry uploading.',
+            return home(session=session,
+                        message='No file selected. Retry uploading.',
                         success=False)
 
         # If file is selected and has an image extension
@@ -108,7 +122,7 @@ def upload():
             # New Photo object
             photo = Photo(file_path=file_path)
 
-            # Obtain User object for the logged in usere.
+            # Obtain User object for the logged in user
             user = User.query.filter_by(user_id=session['user_id']).first()
 
             # Adding the Photo object
@@ -116,11 +130,15 @@ def upload():
 
             # Commit the additions
             database.session.commit()
-            return home(session=session, message='File uploaded successfully.', success=True)
+            return home(session=session,
+                        message='File uploaded successfully.',
+                        success=True)
 
     # When the user is logged-in and the endpoint is requested
     elif request.method == 'GET' and session['logged_in']:
-        return home(session=session, message=False, success=False)
+        return home(session=session,
+                    message=False,
+                    success=False)
 
     # When the user is not logged-in and the endpoint is requested
     return redirect('/index')

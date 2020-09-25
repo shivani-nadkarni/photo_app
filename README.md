@@ -64,8 +64,9 @@ export S3_KEY='minioadmin'
 export S3_SECRET='minioadmin'
 export S3_BUCKET='mytestbucket'
 ```
+Now we are good to run the application.
 
-### Run
+## Run
 
 To start minio server, type the following.
 ```
@@ -75,6 +76,7 @@ To start flask server, run the following command in the base folder.
 ```
 python3 -m photo_app
 ```
+Open the flask URL in the browser.
 
 ### Demo
 
@@ -92,4 +94,4 @@ Shivani Nadkarni - https://github.com/shivani-nadkarni
 
 ## Acknowledgments
 
-Thanks to viren-nadkarni for guiding and inspiring to build this - https://github.com/viren-nadkarni
+Thanks to my brother and mentor viren-nadkarni for guiding and inspiring me to build this - https://github.com/viren-nadkarni

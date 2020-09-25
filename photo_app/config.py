@@ -1,4 +1,5 @@
 """Creates Config object with variables to be used throughout the application"""
+
 import os
 
 class Config():
