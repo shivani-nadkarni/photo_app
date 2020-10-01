@@ -6,7 +6,7 @@ Enters some records in 'users' table.
 from flask_sqlalchemy import SQLAlchemy
 from photo_app.routes import app
 
-# Create database object and associate to the main application object
+# Create database object and associate it to the main application object
 database = SQLAlchemy(app)
 
 class User(database.Model):
