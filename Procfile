@@ -1,1 +1,1 @@
-web: gunicorn photo_app:app
+web: python3 -m photo_app
