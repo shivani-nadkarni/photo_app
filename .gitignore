@@ -4,3 +4,4 @@ photo_app/__pycache__/
 photo_app/__init__.pyc
 data/
 variables.sh
+.env

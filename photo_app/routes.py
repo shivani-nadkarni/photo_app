@@ -2,8 +2,8 @@
 
 from flask import render_template, request, session, redirect
 from werkzeug.utils import secure_filename
-from photo_app import app
-from photo_app.db import database, User, Photo
+from photo_app import app, database
+from photo_app.models import User, Photo
 from photo_app.helpers import upload_file_to_s3
 
 def allowed_file(filename):

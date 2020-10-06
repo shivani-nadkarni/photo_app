@@ -3,11 +3,10 @@ Creates database 'photo_app'.
 Enters some records in 'users' table.
 """
 
-from flask_sqlalchemy import SQLAlchemy
-from photo_app.routes import app
+from photo_app import database
 
-# Create database object and associate it to the main application object
-database = SQLAlchemy(app)
+# # Create database object and associate it to the main application object
+# database = SQLAlchemy(app)
 
 class User(database.Model):
     """ User class specifies the attributes and characteristics for table

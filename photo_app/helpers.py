@@ -3,7 +3,7 @@ Specifies upload file method.
 """
 
 import boto3
-from photo_app.routes import app
+from photo_app import app
 
 def upload_file_to_s3(s3_file_path, file, bucket_name):
     """This method is used to upload file to the bucket.

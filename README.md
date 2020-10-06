@@ -33,8 +33,8 @@ python3
 ```
 Then type the following the create the database.
 ```
-from photo_app.routes import database
-from photo_app.db import User, Photo, create_db
+from photo_app import database
+from photo_app.models import User, Photo, create_db
 
 create_db()
 ```
@@ -70,11 +70,11 @@ Now we are good to run the application.
 
 To start minio server, type the following.
 ```
-minio server data 
+minio server ./data 
 ```
 To start flask server, run the following command in the base folder.
 ```
-python3 -m photo_app
+python3 run.py
 ```
 Open the flask URL in the browser.
 
