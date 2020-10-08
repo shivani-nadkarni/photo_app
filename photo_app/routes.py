@@ -114,8 +114,9 @@ def upload():
             file_name = secure_filename(file.filename)
 
             # Create file path for image storage in S3, relative to bucket
-            file_path = '{}/{}'.format(session['username'], file_name)
-
+            # file_path = '{}/{}'.format(session['username'], file_name)
+            file_path = file_name
+            
             # Upload to minio
             upload_file_to_s3(file_path, file, app.config['S3_BUCKET'])
 

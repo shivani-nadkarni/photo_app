@@ -15,7 +15,6 @@ def upload_file_to_s3(s3_file_path, file, bucket_name):
 
     # Use S3 object storage
     s3_obj = boto3.client('s3',
-                          endpoint_url=app.config['S3_URL'],
                           aws_access_key_id=app.config['S3_KEY'],
                           aws_secret_access_key=app.config['S3_SECRET'])
 
