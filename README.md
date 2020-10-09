@@ -1,43 +1,95 @@
 # Photo App
-
-This application enables users to upload and view uploaded pictures.
+This application enables users to upload and view uploaded pictures. The application will run on Heroku with postgresql database attached to it. The uploaded images are stored on AWS S3.
 
 ## Getting Started
-
 Download the repository or use git clone to get a copy of the project on your system.
 ```
-git clone https://github.com/shivani-nadkarni/photo_app.git
+$ git clone https://github.com/shivani-nadkarni/photo_app.git
 ```
 ### Prerequisites
-
 Run reqirements.txt to install python libraries.
 ```
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
-Install postgreSQL.
+### Setting-up Heroku
+Inorder to use Heroku CLI, we will have to install heroku on our system and then login into your heroku account.
 ```
-apt-get install postgresql
-```
-In the postgres console, create a database and name it 'photo_app'.
+$ sudo snap install heroku --classic
 
-Change the database URL accordingly. For postgreSQL, we have default user as 'postgres' and no default password. You can set password for the same. I have set 'postgres' as the password. 
+$ heroku login
+```
+Once your login is verified on the browse, next is creating a new app on heroku, which is going to receive the cloned source code. Leave the name blank and heroku will generate a default name for your app. I have named the app 'photoapp_shiv'.
+```
+$ heroku create photoapp-shiv
+```
+Furthermore, we will also use heroku-postgres for deploying the database in the same heroku app.
+```
+heroku addons:create heroku-postgresql:hobby-dev
+```
+### PostgreSQL Installation
+I will first create postgres database locally and later push it to heroku.
 
-You can then set environment variables for database URL and secret key as follows.
+In order to do that let's install postgreSQL on our system.
 ```
-export DATABASE_URL="postgresql://postgres:postgres@localhost/photo_app"
-export SECRET_KEY='1234sasdf//;;'
-``` 
-To create the database, open python interpretor.
+$ sudo apt-get install postgresql
 ```
-python3
+PostgreSQL comes with the default role 'postgres'. In order to proceed, I created a role with name same as my system root username. You can do the same as follows.
+```
+$ sudo -u postgres
+
+postgres@vostro:~$ createuser --interactive
+
+Enter name of role to add: shivani
+
+Shall the new role be a superuser? (y/n) y
+
+postgres@vostro:~$ \q
+```
+Exit the postgres console. Next, we push the database to heroku.
+
+### Database Intialisation
+In the postgres console, create a new database and name it 'photo_app'.
+ 
+To initialise our database, open python interpretor.
+```
+$ python3
 ```
 Then type the following the create the database.
 ```
-from photo_app import database
-from photo_app.models import User, Photo, create_db
+>> from photo_app import database
+>> from photo_app.models import User, Photo, create_db
 
-create_db()
+>> create_db()
 ```
+### Pushing the database
+The following command pushes local database to the heroku app's primary database.
+```
+$ heroku pg:push photo_app HEROKU_POSTGRESQL_SILVER --app photoapp-shiv
+```
+You can access the heroku database from your system. The following commands gives the database information and opens postgresql console respectively.
+```
+$ heroku pg:info
+
+$ heroku pg:psql
+```
+### Config variables
+Next, set environment variables necessary to run your application on heroku.
+```
+$ heroku config:set VAR_NAME1=VAR_VALUE1 VAR_NAME2=VAR_VALUE2
+```
+Following are the names of the variables to be configured. Enter the key names as they are. And the values should be as per your application set-up.
+
+SECRET_KEY:    <YOUR APPLICATION SECRET KEY>
+S3_BUCKET:     <YOUR_S3_BUCKET_NAME>
+S3_KEY:        <YOUR_S3_KEY>
+S3_SECRET:     <YOUR S3_SECRET>
+S3_REGION:     <YOUR S3_REGION>
+
+Heroku will set a database URL for the database. You can view it by following.
+```
+$ heroku config:get DATABASE_URL
+```
+### Set-up Storage Server
 Now, we create a minio object storage server, where we will be uploading images. Also, download the minio client(mc) command.
 ```
 wget https://dl.min.io/server/minio/release/linux-amd64/minio
@@ -66,32 +118,36 @@ export S3_BUCKET='mytestbucket'
 ```
 Now we are good to run the application.
 
+### Deployment on Heroku
+Now we will push the local code to the heroku app.
+```
+$ git add -A
+$ git commit -m "Heroku Demo."
+$ git push heroku master
+```
 ## Run
-
 To start minio server, type the following.
 ```
 minio server ./data 
 ```
-To start flask server, run the following command in the base folder.
+Click on the URL generated on the console (When we created the app, the url is given), to view the app on the browser. Or type the following.
 ```
-python3 run.py
+$ heroku open
 ```
-Open the flask URL in the browser.
+You can also test your application locally. For that you will have to just add .env file containing the environment variables (config variables) to your base folder. Use the following to do that. 
+```
+$ heroku config:get <VAR-NAME> >> .env
 
+$ heroku local
+```
 ### Demo
-
 You can sign in the portal by using the credentials username as 'guest' and password 'guest'.
 
 Once logged in, upload pictures by browsing picture of you choice and then click on upload.
 All uploaded pictures can be viewed through the thumbnails or by clicking the image links.
 
 Once done, you can logout of the portal by clicking 'Logout' on the top right corner. 
-
 ## Authors
-
 Shivani Nadkarni - https://github.com/shivani-nadkarni
-
-
 ## Acknowledgments
-
 Thanks to my brother and mentor viren-nadkarni for guiding and inspiring me to build this - https://github.com/viren-nadkarni
