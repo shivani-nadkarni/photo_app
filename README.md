@@ -72,11 +72,11 @@ $ heroku config:set VAR_NAME1=VAR_VALUE1 VAR_NAME2=VAR_VALUE2
 ```
 Following are the names of the variables to be configured. Enter the key names as they are. And the values should be as per your application set-up.
 
-1. SECRET_KEY: <YOUR APPLICATION SECRET KEY>
+1. SECRET_KEY: <YOUR_APPLICATION_SECRET KEY>
 2. S3_BUCKET:  <YOUR_S3_BUCKET_NAME>
 3. S3_KEY:     <YOUR_S3_KEY>
-4. S3_SECRET:  <YOUR S3_SECRET>
-5. S3_REGION:  <YOUR S3_REGION>
+4. S3_SECRET:  <YOUR_S3_SECRET>
+5. S3_REGION:  <YOUR_S3_REGION>
 
 Heroku will set a database URL for the database on it's own. You can view it through following.
 ```
