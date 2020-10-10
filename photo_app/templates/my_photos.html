@@ -36,8 +36,8 @@
 	{% if photos %}
 		<ul>
     	{% for photo in photos %}
-    		<a href="{{ s3_location }}{{ photo.file_path }}" >
-    			<img src="{{ s3_location }}{{ photo.file_path }}" style="width: 150px; height:150px">
+    		<a href="{{ photo }}" >
+    			<img src="{{ photo }}" style="width: 150px; height:150px">
     		</a>
     	{% endfor %}
    		</ul>

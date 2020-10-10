@@ -4,7 +4,7 @@ from flask import render_template, request, session, redirect
 from werkzeug.utils import secure_filename
 from photo_app import app, database
 from photo_app.models import User, Photo
-from photo_app.helpers import upload_file_to_s3
+from photo_app.helpers import upload_file_to_s3, create_presigned_url
 
 def allowed_file(filename):
     """Checks if the file has an image extension.
@@ -35,9 +35,18 @@ def home(session, message, success):
 
     if session['logged_in']:
         photos = Photo.query.filter_by(user_id=session['user_id']).all()
+
+        bucket_name = app.config['S3_BUCKET']
+        url_list = []
+
+        # fetches urls of all S3 pictures
+        for photo in photos:
+            url = create_presigned_url(bucket_name, photo.file_path)
+            url_list.append(url)
+
         return render_template("my_photos.html",
                                session=session,
-                               photos=photos,
+                               photos=url_list,
                                message=message,
                                success=success,
                                s3_location=app.config['S3_LOCATION'])
@@ -114,13 +123,12 @@ def upload():
             file_name = secure_filename(file.filename)
 
             # Create file path for image storage in S3, relative to bucket
-            # file_path = '{}/{}'.format(session['username'], file_name)
-            file_path = file_name
-            
-            # Upload to minio
+            file_path = '{}/{}'.format(session['username'], file_name)
+
+            # Upload to s3
             upload_file_to_s3(file_path, file, app.config['S3_BUCKET'])
 
-            # New Photo object
+            # New Photo object98juug
             photo = Photo(file_path=file_path)
 
             # Obtain User object for the logged in user
