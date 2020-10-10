@@ -48,8 +48,7 @@ def home(session, message, success):
                                session=session,
                                photos=url_list,
                                message=message,
-                               success=success,
-                               s3_location=app.config['S3_LOCATION'])
+                               success=success)
     return index()
 
 # endpoint for /login
