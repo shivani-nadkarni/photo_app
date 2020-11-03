@@ -12,7 +12,8 @@ from photo_app import app
 s3_obj = boto3.client('s3',
                       aws_access_key_id=app.config['S3_KEY'],
                       aws_secret_access_key=app.config['S3_SECRET'],
-                      config=Config(signature_version='s3v4'))
+                      config=Config(region_name = 'ap-south-1',
+                                    signature_version='s3v4'))
 
 def upload_file_to_s3(s3_file_path, file, bucket_name):
     """This method is used to upload file to the bucket.
