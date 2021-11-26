@@ -109,7 +109,7 @@ Once logged in, upload pictures by browsing picture of you choice and then click
 All uploaded pictures can be viewed through the thumbnails or by clicking the image links.
 
 Once done, you can logout of the portal by clicking 'Logout' on the top right corner. 
-## Authors
+## Author
 Shivani Nadkarni - https://github.com/shivani-nadkarni
 ## Acknowledgments
 Thanks to my brother and mentor viren-nadkarni for guiding and inspiring me to build this - https://github.com/viren-nadkarni
