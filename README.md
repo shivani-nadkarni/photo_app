@@ -1,5 +1,5 @@
 # Photo App
-This application enables users to upload and view uploaded pictures. The application will run on Heroku with postgresql database attached to it. The uploaded images are stored on AWS S3.
+This application enables users to upload and view uploaded pictures. The application will run on Heroku with postgresql database attached to it. The uploaded images are stored on AWS S3. You can view the app [here](https://photoapp-shiv.herokuapp.com/).
 
 ## Getting Started
 Download the repository or use git clone to get a copy of the project on your system.
